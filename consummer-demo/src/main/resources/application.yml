@@ -1,0 +1,36 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: user-consumer # 应用名称
+  cloud:
+    loadbalancer:
+      retry:
+        enabled: true # 开启Spring Cloud的重试功能
+eureka:
+  client:
+    service-url: # EurekaServer地址
+      defaultZone: http://127.0.0.1:10086/eureka,http://127.0.0.1:10087/eureka
+    registry-fetch-interval-seconds: 5 #默认值为30，没隔多少秒从注册中心拉取服务列表，然后缓存在本地
+  instance:
+    prefer-ip-address: true # 当其它服务获取地址时提供ip而不是hostname
+    ip-address: 127.0.0.1 # 指定自己的ip信息，不指定的话会自己寻找
+    expiration-duration-in-seconds: 10   #服务失效时间，默认值90秒  生产环境使用默认
+    lease-renewal-interval-in-seconds: 5 #服务续约(renew)的间隔，默认为30秒 生产环境使用默认
+user-service:
+  ribbon:
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule #值就是IRule的实现类,可以通过自定义实现IRule自定义
+    ConnectTimeout: 250 # Ribbon的连接超时时间
+    ReadTimeout: 1000 # Ribbon的数据读取超时时间
+    OkToRetryOnAllOperations: true # 是否对所有操作都进行重试
+    MaxAutoRetriesNextServer: 1 # 切换实例的重试次数
+    MaxAutoRetries: 1 # 对当前实例的重试次数
+    #根据如上配置，当访问到某个服务超时后，它会再次尝试访问下一个服务实例，如果不行就再换一个实例，
+    #如果不行，则返回失败。切换次数取决于MaxAutoRetriesNextServer参数的值
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 6000 # 设置hystrix的超时时间为6000ms

@@ -1,0 +1,13 @@
+server:
+  port: 10086 # 端口
+eureka:
+  instance:
+    hostname:server1
+  client:
+    #register-with-eureka: false # 是否注册自己的信息到EurekaServer，默认是true
+    #fetch-registry: false # 是否拉取其它服务的信息，默认是true
+    service-url: # EurekaServer的地址，现在是自己的地址，如果是集群，需要加上其它Server的地址。
+      defaultZone: http://127.0.0.1:10087/eureka
+  server:
+    eviction-interval-timer-in-ms: 5000 #服务失效剔除时间，单位是毫秒。默认是60秒 生产环境用默认的
+    enable-self-preservation: false # 关闭自我保护模式（默认为打开） 生产环境用默认的
